@@ -1,4 +1,4 @@
-package tw.com.bristle.customerdetailservice;
+package com.bristle.customerdetailservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

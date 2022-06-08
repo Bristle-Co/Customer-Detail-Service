@@ -1,4 +1,4 @@
-package tw.com.bristle.customerdetailservice;
+package com.bristle.customerdetailservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
