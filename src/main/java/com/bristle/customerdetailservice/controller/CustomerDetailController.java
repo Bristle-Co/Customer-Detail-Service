@@ -27,7 +27,6 @@ public class CustomerDetailController {
     @GetMapping("/getAllCustomers")
     public ResponseEntity<List<CustomerEntity>> getAllCustomers() {
         com.bristle.proto.Customer n = Customer.newBuilder().build();
-        n.
         try {
             return new ResponseEntity<List<CustomerEntity>>(
                     m_customerDetailService.getAllCustomers(), HttpStatus.ACCEPTED);
