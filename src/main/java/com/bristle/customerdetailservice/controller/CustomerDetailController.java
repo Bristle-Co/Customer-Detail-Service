@@ -2,15 +2,10 @@ package com.bristle.customerdetailservice.controller;
 
 import com.bristle.customerdetailservice.model.CustomerEntity;
 import com.bristle.customerdetailservice.service.CustomerDetailService;
-import com.bristle.proto.Customer;
-import com.sun.jdi.event.ExceptionEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
-import javax.persistence.Column;
 import java.util.List;
 
 @RequestMapping(path = "api/v1/customer-detail")
@@ -26,7 +21,6 @@ public class CustomerDetailController {
 
     @GetMapping("/getAllCustomers")
     public ResponseEntity<List<CustomerEntity>> getAllCustomers() {
-        com.bristle.proto.Customer n = Customer.newBuilder().build();
         try {
             return new ResponseEntity<List<CustomerEntity>>(
                     m_customerDetailService.getAllCustomers(), HttpStatus.ACCEPTED);

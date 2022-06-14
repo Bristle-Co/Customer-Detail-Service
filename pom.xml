@@ -74,7 +74,6 @@
 				<version>1.7.0</version>
 			</extension>
 		</extensions>
-
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -95,6 +94,11 @@
 				<artifactId>protobuf-maven-plugin</artifactId>
 				<version>${protobuf-plugin.version}</version>
 				<configuration>
+					<protoSourceRoot>configuration/proto</protoSourceRoot>
+					<includes>
+						<include>common/*.proto</include>
+						<include>customer-detail/*.proto</include>
+					</includes>
 					<protocArtifact>com.google.protobuf:protoc:${protobuf.version}:exe:${os.detected.classifier}</protocArtifact>
 					<pluginId>grpc-java</pluginId>
 					<pluginArtifact>io.grpc:protoc-gen-grpc-java:${grpc.version}:exe:${os.detected.classifier}</pluginArtifact>
