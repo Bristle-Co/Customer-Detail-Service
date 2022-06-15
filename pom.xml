@@ -97,7 +97,7 @@
 					<protoSourceRoot>configuration/proto</protoSourceRoot>
 					<includes>
 						<include>common/*.proto</include>
-						<include>customer-detail/*.proto</include>
+						<include>customer_detail/*.proto</include>
 					</includes>
 					<protocArtifact>com.google.protobuf:protoc:${protobuf.version}:exe:${os.detected.classifier}</protocArtifact>
 					<pluginId>grpc-java</pluginId>

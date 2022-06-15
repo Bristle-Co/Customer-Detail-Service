@@ -13,7 +13,6 @@ public class CustomerDetailService {
 
     private final CustomerDetailRepository m_customerDetailRepository;
 
-    @Autowired
     public CustomerDetailService(CustomerDetailRepository customerDetailRepository) {
         this.m_customerDetailRepository = customerDetailRepository;
     }
