@@ -12,6 +12,8 @@ import com.bristle.proto.customer_detail.GetAllCustomersRequest;
 import com.bristle.proto.customer_detail.GetAllCustomersResponse;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,9 @@ public class CustomerDetailServiceGrpcController extends CustomerDetailServiceGr
 
     public CustomerDetailService m_customerDetailService;
 
+    Logger log = LoggerFactory.getLogger( CustomerDetailServiceGrpcController.class);
+
+
     CustomerDetailServiceGrpcController(CustomerDetailService customerDetailService) {
         this.m_customerDetailService = customerDetailService;
     }
@@ -31,15 +36,16 @@ public class CustomerDetailServiceGrpcController extends CustomerDetailServiceGr
     public void getAllCustomers(GetAllCustomersRequest request,
                                 StreamObserver<GetAllCustomersResponse> responseObserver) {
         String requestId = request.getRequestContext().getRequestId();
-        if (requestId.equals("")) {
-            responseObserver.onNext(
-                    GetAllCustomersResponse.newBuilder().setResponseContext(
-                         ResponseContext.newBuilder().setError(ApiError.newBuilder()
-                                 .setErrorMessage("Unknown request, missing request id"))
-                    ).build());
-            responseObserver.onCompleted();
-            return;
-        }
+        log.info(request.toString());
+//        if (requestId.equals("")) {
+//            responseObserver.onNext(
+//                    GetAllCustomersResponse.newBuilder().setResponseContext(
+//                         ResponseContext.newBuilder().setError(ApiError.newBuilder()
+//                                 .setErrorMessage("Unknown request, missing request id"))
+//                    ).build());
+//            responseObserver.onCompleted();
+//            return;
+//        }
         ResponseContext.Builder responseBuilder = ResponseContext.newBuilder();
         responseBuilder.setRequestId(requestId);
         List<CustomerEntity> result;

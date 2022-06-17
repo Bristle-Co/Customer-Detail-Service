@@ -34,8 +34,7 @@ public class CustomerEntity {
 
 
     @Id
-    @NonNull
-    @Column(name = CUSTOMERS_COLM_CUSTOMER_ID)
+    @Column(name = CUSTOMERS_COLM_CUSTOMER_ID, nullable = false)
     String customerId;
 
     @Column(name = CUSTOMERS_COLM_NAME)
