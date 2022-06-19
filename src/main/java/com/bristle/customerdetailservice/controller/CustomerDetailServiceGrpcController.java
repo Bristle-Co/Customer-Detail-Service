@@ -6,6 +6,8 @@ import com.bristle.proto.common.ApiError;
 import com.bristle.proto.common.ResponseContext;
 import com.bristle.proto.customer_detail.Customer;
 import com.bristle.proto.customer_detail.CustomerDetailServiceGrpc;
+import com.bristle.proto.customer_detail.DeleteCustomerRequest;
+import com.bristle.proto.customer_detail.DeleteCustomerResponse;
 import com.bristle.proto.customer_detail.GetAllCustomersRequest;
 import com.bristle.proto.customer_detail.GetAllCustomersResponse;
 import com.bristle.proto.customer_detail.UpsertCustomerRequest;
@@ -43,7 +45,6 @@ public class CustomerDetailServiceGrpcController extends CustomerDetailServiceGr
                     GetAllCustomersResponse.newBuilder()
                             .addAllCustomer(customerList)
                             .setResponseContext(responseContextBuilder.build()).build());
-            responseObserver.onCompleted();
 
         } catch (Exception e) {
             log.error("Request id: " + requestId + " " + e.getMessage());
@@ -53,8 +54,9 @@ public class CustomerDetailServiceGrpcController extends CustomerDetailServiceGr
 
             responseObserver.onNext(GetAllCustomersResponse.newBuilder()
                     .setResponseContext(responseContextBuilder.build()).build());
-            responseObserver.onCompleted();
         }
+        responseObserver.onCompleted();
+
     }
 
     @Override
@@ -71,7 +73,6 @@ public class CustomerDetailServiceGrpcController extends CustomerDetailServiceGr
                     UpsertCustomerResponse.newBuilder()
                             .setCustomer(addedCustomer)
                             .setResponseContext(responseContextBuilder).build());
-            responseObserver.onCompleted();
 
         } catch (Exception e) {
             log.error("Request id: " + requestId + " " + e.getMessage());
@@ -81,7 +82,44 @@ public class CustomerDetailServiceGrpcController extends CustomerDetailServiceGr
 
             responseObserver.onNext(UpsertCustomerResponse.newBuilder()
                     .setResponseContext(responseContextBuilder.build()).build());
-            responseObserver.onCompleted();
         }
+        responseObserver.onCompleted();
+
+    }
+
+    @Override
+    public void deleteCustomer(DeleteCustomerRequest request, StreamObserver<DeleteCustomerResponse> responseObserver) {
+        String requestId = request.getRequestContext().getRequestId();
+        log.info("Request id: "+requestId+" , getAllCustomers grpc request received");
+        ResponseContext.Builder responseContextBuilder = ResponseContext.newBuilder();
+        responseContextBuilder.setRequestId(requestId);
+
+        try {
+            Customer deletedCustomer = m_customerDetailService.deleteCustomer(request.getCustomerId());
+
+            if (deletedCustomer == null){
+                responseObserver.onNext(
+                        DeleteCustomerResponse.newBuilder()
+                                .setResponseContext(responseContextBuilder).build());
+                responseObserver.onCompleted();
+                // cut execute here
+                return;
+            }
+
+            responseObserver.onNext(
+                    DeleteCustomerResponse.newBuilder()
+                            .setDeletedCustomer(deletedCustomer)
+                            .setResponseContext(responseContextBuilder).build());
+
+        } catch (Exception e){
+            log.error("Request id: " + requestId + " " + e.getMessage());
+            responseContextBuilder.setError(ApiError.newBuilder()
+                    .setErrorMessage(e.getMessage())
+                    .setExceptionName(e.getClass().getName()));
+
+            responseObserver.onNext(DeleteCustomerResponse.newBuilder()
+                    .setResponseContext(responseContextBuilder.build()).build());
+        }
+        responseObserver.onCompleted();
     }
 }

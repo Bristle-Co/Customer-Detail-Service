@@ -23,7 +23,12 @@ import static com.bristle.customerdetailservice.model.CustomerEntity.COLM_NOTE;
 
 @Repository
 public interface CustomerDetailRepository extends JpaRepository<CustomerEntity, Long> {
-    @Query(value = "SELECT * FROM " + TABLE_NAME + " WHERE "+COLM_CUSTOMER_ID + " = ?1 ;"
+
+    @Modifying
+    @Query(value = "DELETE FROM " + TABLE_NAME + " WHERE "+COLM_CUSTOMER_ID+ " = ?1 ;", nativeQuery = true)
+    void deleteCustomerById(String customerId);
+
+    @Query(value = "SELECT * FROM " + TABLE_NAME + " WHERE " + COLM_CUSTOMER_ID + " = ?1 ;"
             , nativeQuery = true)
     CustomerEntity getCustomerByCustomerId(String customerId);
 

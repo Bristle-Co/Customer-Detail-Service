@@ -16,6 +16,7 @@ public class CustomerDetailService {
     private final CustomerDetailRepository m_customerDetailRepository;
 
     private final CustomerDetailEntityConverter m_converter;
+
     public CustomerDetailService(CustomerDetailRepository customerDetailRepository, CustomerDetailEntityConverter converter) {
         this.m_customerDetailRepository = customerDetailRepository;
         this.m_converter = converter;
@@ -29,7 +30,7 @@ public class CustomerDetailService {
 
     @Transactional
     public Customer upsertCustomer(Customer customer) throws Exception {
-        if ( customer.getCustomerId().equals("")){
+        if (customer.getCustomerId().equals("")) {
             throw new IllegalArgumentException("customerId can not be null or empty string");
         }
 
@@ -61,5 +62,17 @@ public class CustomerDetailService {
                 note.equals("") ? null : note);
 
         return customer;
+    }
+
+    @Transactional
+    public Customer deleteCustomer(String customerId) throws Exception {
+        CustomerEntity toBeDeleted = m_customerDetailRepository.getCustomerByCustomerId(customerId);
+        if (toBeDeleted == null ){
+            return null;
+        }
+
+        m_customerDetailRepository.deleteCustomerById(customerId);
+        Customer deletedCustomer = m_converter.entityToProto(toBeDeleted);
+        return deletedCustomer;
     }
 }
