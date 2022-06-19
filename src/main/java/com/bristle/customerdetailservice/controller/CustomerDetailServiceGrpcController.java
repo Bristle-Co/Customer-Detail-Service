@@ -2,21 +2,18 @@ package com.bristle.customerdetailservice.controller;
 
 import com.bristle.customerdetailservice.model.CustomerEntity;
 import com.bristle.customerdetailservice.service.CustomerDetailService;
-import com.bristle.customerdetailservice.util.ProtoUtil;
 import com.bristle.proto.common.ApiError;
 import com.bristle.proto.common.ResponseContext;
-import com.bristle.proto.customer_detail.CustomerDetail;
-import com.bristle.proto.customer_detail.CustomerDetailGrpcService;
+import com.bristle.proto.customer_detail.Customer;
 import com.bristle.proto.customer_detail.CustomerDetailServiceGrpc;
 import com.bristle.proto.customer_detail.GetAllCustomersRequest;
 import com.bristle.proto.customer_detail.GetAllCustomersResponse;
+import com.bristle.proto.customer_detail.UpsertCustomerRequest;
+import com.bristle.proto.customer_detail.UpsertCustomerResponse;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -36,34 +33,54 @@ public class CustomerDetailServiceGrpcController extends CustomerDetailServiceGr
     public void getAllCustomers(GetAllCustomersRequest request,
                                 StreamObserver<GetAllCustomersResponse> responseObserver) {
         String requestId = request.getRequestContext().getRequestId();
-        log.info(request.toString());
-//        if (requestId.equals("")) {
-//            responseObserver.onNext(
-//                    GetAllCustomersResponse.newBuilder().setResponseContext(
-//                         ResponseContext.newBuilder().setError(ApiError.newBuilder()
-//                                 .setErrorMessage("Unknown request, missing request id"))
-//                    ).build());
-//            responseObserver.onCompleted();
-//            return;
-//        }
-        ResponseContext.Builder responseBuilder = ResponseContext.newBuilder();
-        responseBuilder.setRequestId(requestId);
-        List<CustomerEntity> result;
+        log.info("Request id: " + requestId + " ,getAllCustomers grpc request received");
+        ResponseContext.Builder responseContextBuilder = ResponseContext.newBuilder();
+        responseContextBuilder.setRequestId(requestId);
+
         try {
-            result = m_customerDetailService.getAllCustomers();
+            List<Customer> customerList = m_customerDetailService.getAllCustomers();
             responseObserver.onNext(
                     GetAllCustomersResponse.newBuilder()
-                            .addAllCustomer(ProtoUtil.customerEntityListToProtoList(result))
-                            .setResponseContext(responseBuilder.build()).build());
+                            .addAllCustomer(customerList)
+                            .setResponseContext(responseContextBuilder.build()).build());
             responseObserver.onCompleted();
 
         } catch (Exception e) {
-            responseBuilder.setError(ApiError.newBuilder()
-                    .setErrorMessage(e.getMessage())
+            log.error("Request id: " + requestId + " " + e.getMessage());
+            responseContextBuilder.setError(ApiError.newBuilder()
+                    .setErrorMessage("test")
                     .setExceptionName(e.getClass().getName()));
 
             responseObserver.onNext(GetAllCustomersResponse.newBuilder()
-                    .setResponseContext(responseBuilder.build()).build());
+                    .setResponseContext(responseContextBuilder.build()).build());
+            responseObserver.onCompleted();
+        }
+    }
+
+    @Override
+    public void upsertCustomer(UpsertCustomerRequest request, StreamObserver<UpsertCustomerResponse> responseObserver) {
+        String requestId = request.getRequestContext().getRequestId();
+        log.info("Request id: "+requestId+" , getAllCustomers grpc request received");
+        ResponseContext.Builder responseContextBuilder = ResponseContext.newBuilder();
+        responseContextBuilder.setRequestId(requestId);
+        Customer toBeUpserted = request.getCustomer();
+
+        try {
+            Customer addedCustomer = m_customerDetailService.upsertCustomer(toBeUpserted);
+            responseObserver.onNext(
+                    UpsertCustomerResponse.newBuilder()
+                            .setCustomer(addedCustomer)
+                            .setResponseContext(responseContextBuilder).build());
+            responseObserver.onCompleted();
+
+        } catch (Exception e) {
+            log.error("Request id: " + requestId + " " + e.getMessage());
+            responseContextBuilder.setError(ApiError.newBuilder()
+                    .setErrorMessage(e.getMessage())
+                    .setExceptionName(e.getClass().getName()));
+
+            responseObserver.onNext(UpsertCustomerResponse.newBuilder()
+                    .setResponseContext(responseContextBuilder.build()).build());
             responseObserver.onCompleted();
         }
     }
