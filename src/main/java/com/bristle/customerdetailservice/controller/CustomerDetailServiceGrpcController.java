@@ -24,7 +24,7 @@ public class CustomerDetailServiceGrpcController extends CustomerDetailServiceGr
 
     public CustomerDetailService m_customerDetailService;
 
-    Logger log = LoggerFactory.getLogger( CustomerDetailServiceGrpcController.class);
+    Logger log = LoggerFactory.getLogger(CustomerDetailServiceGrpcController.class);
 
 
     CustomerDetailServiceGrpcController(CustomerDetailService customerDetailService) {
@@ -62,7 +62,7 @@ public class CustomerDetailServiceGrpcController extends CustomerDetailServiceGr
     @Override
     public void upsertCustomer(UpsertCustomerRequest request, StreamObserver<UpsertCustomerResponse> responseObserver) {
         String requestId = request.getRequestContext().getRequestId();
-        log.info("Request id: "+requestId+" , getAllCustomers grpc request received");
+        log.info("Request id: " + requestId + " , upsertCustomer grpc request received. \n" + request.getCustomer());
         ResponseContext.Builder responseContextBuilder = ResponseContext.newBuilder();
         responseContextBuilder.setRequestId(requestId);
         Customer toBeUpserted = request.getCustomer();
@@ -90,14 +90,14 @@ public class CustomerDetailServiceGrpcController extends CustomerDetailServiceGr
     @Override
     public void deleteCustomer(DeleteCustomerRequest request, StreamObserver<DeleteCustomerResponse> responseObserver) {
         String requestId = request.getRequestContext().getRequestId();
-        log.info("Request id: "+requestId+" , getAllCustomers grpc request received");
+        log.info("Request id: " + requestId + " , deleteCustomer grpc request received. " + request.getCustomerId());
         ResponseContext.Builder responseContextBuilder = ResponseContext.newBuilder();
         responseContextBuilder.setRequestId(requestId);
 
         try {
             Customer deletedCustomer = m_customerDetailService.deleteCustomer(request.getCustomerId());
 
-            if (deletedCustomer == null){
+            if (deletedCustomer == null) {
                 responseObserver.onNext(
                         DeleteCustomerResponse.newBuilder()
                                 .setResponseContext(responseContextBuilder).build());
@@ -111,7 +111,7 @@ public class CustomerDetailServiceGrpcController extends CustomerDetailServiceGr
                             .setDeletedCustomer(deletedCustomer)
                             .setResponseContext(responseContextBuilder).build());
 
-        } catch (Exception e){
+        } catch (Exception e) {
             log.error("Request id: " + requestId + " " + e.getMessage());
             responseContextBuilder.setError(ApiError.newBuilder()
                     .setErrorMessage(e.getMessage())
