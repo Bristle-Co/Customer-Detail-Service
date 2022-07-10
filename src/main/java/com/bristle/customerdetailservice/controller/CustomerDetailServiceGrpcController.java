@@ -8,8 +8,8 @@ import com.bristle.proto.customer_detail.Customer;
 import com.bristle.proto.customer_detail.CustomerDetailServiceGrpc;
 import com.bristle.proto.customer_detail.DeleteCustomerRequest;
 import com.bristle.proto.customer_detail.DeleteCustomerResponse;
-import com.bristle.proto.customer_detail.GetAllCustomersRequest;
-import com.bristle.proto.customer_detail.GetAllCustomersResponse;
+import com.bristle.proto.customer_detail.GetCustomersRequest;
+import com.bristle.proto.customer_detail.GetCustomersResponse;
 import com.bristle.proto.customer_detail.UpsertCustomerRequest;
 import com.bristle.proto.customer_detail.UpsertCustomerResponse;
 import io.grpc.stub.StreamObserver;
@@ -32,31 +32,29 @@ public class CustomerDetailServiceGrpcController extends CustomerDetailServiceGr
     }
 
     @Override
-    public void getAllCustomers(GetAllCustomersRequest request,
-                                StreamObserver<GetAllCustomersResponse> responseObserver) {
+    public void getCustomers(GetCustomersRequest request, StreamObserver<GetCustomersResponse> responseObserver) {
         String requestId = request.getRequestContext().getRequestId();
-        log.info("Request id: " + requestId + " ,getAllCustomers grpc request received");
+        log.info("Request id: " + requestId + " ,getCustomers grpc request received");
         ResponseContext.Builder responseContextBuilder = ResponseContext.newBuilder();
         responseContextBuilder.setRequestId(requestId);
 
         try {
-            List<Customer> customerList = m_customerDetailService.getAllCustomers();
+            List<Customer> customerList = m_customerDetailService.getCustomers(request.getFilter(),request.getPageIndex(),request.getPageSize());
             responseObserver.onNext(
-                    GetAllCustomersResponse.newBuilder()
+                    GetCustomersResponse.newBuilder()
                             .addAllCustomer(customerList)
                             .setResponseContext(responseContextBuilder.build()).build());
 
         } catch (Exception e) {
             log.error("Request id: " + requestId + " " + e.getMessage());
             responseContextBuilder.setError(ApiError.newBuilder()
-                    .setErrorMessage("test")
+                    .setErrorMessage(e.getMessage())
                     .setExceptionName(e.getClass().getName()));
 
-            responseObserver.onNext(GetAllCustomersResponse.newBuilder()
+            responseObserver.onNext(GetCustomersResponse.newBuilder()
                     .setResponseContext(responseContextBuilder.build()).build());
         }
         responseObserver.onCompleted();
-
     }
 
     @Override

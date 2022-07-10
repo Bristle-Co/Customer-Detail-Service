@@ -2,6 +2,7 @@ package com.bristle.customerdetailservice.data.repository;
 
 import com.bristle.customerdetailservice.model.CustomerEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -22,7 +23,8 @@ import static com.bristle.customerdetailservice.model.CustomerEntity.COLM_RECEIV
 import static com.bristle.customerdetailservice.model.CustomerEntity.COLM_NOTE;
 
 @Repository
-public interface CustomerDetailRepository extends JpaRepository<CustomerEntity, Long> {
+public interface CustomerDetailRepository extends JpaRepository<CustomerEntity, Long>,
+        JpaSpecificationExecutor<CustomerEntity> {
 
     @Modifying
     @Query(value = "DELETE FROM " + TABLE_NAME + " WHERE "+COLM_CUSTOMER_ID+ " = ?1 ;", nativeQuery = true)

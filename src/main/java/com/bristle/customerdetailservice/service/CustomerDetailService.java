@@ -1,12 +1,25 @@
 package com.bristle.customerdetailservice.service;
 
 import com.bristle.customerdetailservice.converter.CustomerDetailEntityConverter;
+import com.bristle.customerdetailservice.data.repository.CustomerEntitySpec;
 import com.bristle.customerdetailservice.model.CustomerEntity;
 import com.bristle.proto.customer_detail.Customer;
+import com.bristle.proto.customer_detail.CustomerFilter;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import com.bristle.customerdetailservice.data.repository.CustomerDetailRepository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,9 +36,42 @@ public class CustomerDetailService {
     }
 
     @Transactional(readOnly = true)
-    public List<Customer> getAllCustomers() throws Exception {
-        List<CustomerEntity> entityList = m_customerDetailRepository.getAllCustomers();
-        return entityList.stream().map(m_converter::entityToProto).collect(Collectors.toList());
+    public List<Customer> getCustomers(CustomerFilter filter, Integer pageIndex, Integer pageSize) throws Exception {
+
+        if(filter == null ) return m_customerDetailRepository.getAllCustomers()
+                .stream().map(m_converter::entityToProto).collect(Collectors.toList());
+        Specification<CustomerEntity> spec = new Specification<CustomerEntity>() {
+            @Override
+            public Predicate toPredicate(Root<CustomerEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                return null;
+            }
+        };
+
+        if (!filter.getCustomerId().equals("")) {
+            spec = spec.and(CustomerEntitySpec.likeCustomerId(filter.getCustomerId()));
+        }
+
+        if (!filter.getName().equals("")) {
+            spec = spec.and(CustomerEntitySpec.likeName(filter.getName()));
+        }
+
+        if (!filter.getContactName().equals("")) {
+            spec = spec.and(CustomerEntitySpec.likeContactName(filter.getContactName()));
+        }
+
+        if (!filter.getContactNumber().equals("")) {
+            spec = spec.and(CustomerEntitySpec.likeContactNumber(filter.getContactNumber()));
+        }
+
+        if (!filter.getAddress().equals("")) {
+            spec = spec.and(CustomerEntitySpec.likeAddress(filter.getAddress()));
+        }
+
+        Sort sort = Sort.by(Sort.Direction.ASC, "customerId");
+        Pageable paging = PageRequest.of(pageIndex, pageSize, sort);
+
+        List<CustomerEntity> rs = m_customerDetailRepository.findAll(Specification.where(spec), paging).toList();
+        return rs.stream().map(m_converter::entityToProto).collect(Collectors.toList());
     }
 
     @Transactional
@@ -72,7 +118,6 @@ public class CustomerDetailService {
         }
 
         m_customerDetailRepository.deleteCustomerById(customerId);
-        Customer deletedCustomer = m_converter.entityToProto(toBeDeleted);
-        return deletedCustomer;
+        return m_converter.entityToProto(toBeDeleted);
     }
 }
