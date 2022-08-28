@@ -1,6 +1,5 @@
 package com.bristle.customerdetailservice.controller;
 
-import com.bristle.customerdetailservice.model.CustomerEntity;
 import com.bristle.customerdetailservice.service.CustomerDetailService;
 import com.bristle.proto.common.ApiError;
 import com.bristle.proto.common.ResponseContext;
