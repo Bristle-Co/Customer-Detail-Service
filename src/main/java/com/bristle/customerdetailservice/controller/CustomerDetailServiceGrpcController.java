@@ -21,7 +21,7 @@ import java.util.List;
 @GrpcService
 public class CustomerDetailServiceGrpcController extends CustomerDetailServiceGrpc.CustomerDetailServiceImplBase {
 
-    public CustomerDetailService m_customerDetailService;
+    public final CustomerDetailService m_customerDetailService;
 
     Logger log = LoggerFactory.getLogger(CustomerDetailServiceGrpcController.class);
 
