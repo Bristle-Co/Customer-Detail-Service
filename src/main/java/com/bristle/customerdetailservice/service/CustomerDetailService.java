@@ -1,7 +1,7 @@
 package com.bristle.customerdetailservice.service;
 
 import com.bristle.customerdetailservice.converter.CustomerDetailEntityConverter;
-import com.bristle.customerdetailservice.data.repository.CustomerEntitySpec;
+import com.bristle.customerdetailservice.repository.CustomerEntitySpec;
 import com.bristle.customerdetailservice.model.CustomerEntity;
 import com.bristle.proto.customer_detail.Customer;
 import com.bristle.proto.customer_detail.CustomerFilter;
@@ -10,16 +10,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import com.bristle.customerdetailservice.data.repository.CustomerDetailRepository;
+import com.bristle.customerdetailservice.repository.CustomerDetailRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 

@@ -1,4 +1,4 @@
-package com.bristle.customerdetailservice.data.repository;
+package com.bristle.customerdetailservice.repository;
 
 import com.bristle.customerdetailservice.model.CustomerEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
