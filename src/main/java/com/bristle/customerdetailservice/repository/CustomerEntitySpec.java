@@ -6,6 +6,12 @@ import org.springframework.data.jpa.domain.Specification;
 
 public class CustomerEntitySpec {
 
+    public static Specification<CustomerEntity> equalCustomerId(String customerId) {
+        if (customerId == null) return null;
+
+        return ((root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get("customerId"), "%" + customerId + "%"));
+    }
     public static Specification<CustomerEntity> likeCustomerId(String customerId) {
         if (customerId == null) return null;
 

@@ -23,7 +23,7 @@ import static com.bristle.customerdetailservice.model.CustomerEntity.COLM_RECEIV
 import static com.bristle.customerdetailservice.model.CustomerEntity.COLM_NOTE;
 
 @Repository
-public interface CustomerDetailRepository extends JpaRepository<CustomerEntity, Long>,
+public interface CustomerDetailRepository extends JpaRepository<CustomerEntity, String>,
         JpaSpecificationExecutor<CustomerEntity> {
 
     @Modifying
@@ -38,32 +38,5 @@ public interface CustomerDetailRepository extends JpaRepository<CustomerEntity, 
     @Query(value = "SELECT * FROM " + TABLE_NAME + " ORDER BY " + COLM_CUSTOMER_ID + ";"
             , nativeQuery = true)
     List<CustomerEntity> getAllCustomers();
-
-    @Modifying
-    @Query(value = "REPLACE INTO " + TABLE_NAME
-            + " ( " + COLM_CUSTOMER_ID + ", "
-            + COLM_NAME + ", "
-            + COLM_CONTACT_NAME + ", "
-            + COLM_CONTACT_NUMBER + ", "
-            + COLM_CONTACT_MOBILE_NUMBER + ", "
-            + COLM_FAX_NUMBER + ", "
-            + COLM_POSTAL_CODE + ", "
-            + COLM_ADDRESS + ", "
-            + COLM_TAX_ID + ", "
-            + COLM_RECEIVER + ", "
-            + COLM_NOTE + ") VALUES ( ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11 )"
-            , nativeQuery = true)
-    void upsertCustomer(String customerId,
-                        String name,
-                        String contactName,
-                        String contactNumber,
-                        String contactMobileNumber,
-                        String faxNumber,
-                        String postalCode,
-                        String address,
-                        String taxId,
-                        String receiver,
-                        String note);
-
 
 }

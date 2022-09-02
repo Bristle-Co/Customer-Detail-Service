@@ -65,6 +65,9 @@ public class CustomerDetailServiceGrpcController extends CustomerDetailServiceGr
         Customer toBeUpserted = request.getCustomer();
 
         try {
+            if (request.getCustomer().getCustomerId().equals("")) {
+            throw new IllegalArgumentException("customerId can not be null or empty string");
+        }
             Customer addedCustomer = m_customerDetailService.upsertCustomer(toBeUpserted);
             responseObserver.onNext(
                     UpsertCustomerResponse.newBuilder()
