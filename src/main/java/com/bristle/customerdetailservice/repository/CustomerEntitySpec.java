@@ -10,7 +10,7 @@ public class CustomerEntitySpec {
         if (customerId == null) return null;
 
         return ((root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get("customerId"), "%" + customerId + "%"));
+                criteriaBuilder.equal(root.get("customerId"), customerId));
     }
     public static Specification<CustomerEntity> likeCustomerId(String customerId) {
         if (customerId == null) return null;
