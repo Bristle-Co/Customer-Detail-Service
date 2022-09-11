@@ -4,12 +4,11 @@ this service is used to store data of all the users and employees in Bristle Co.
 ### Build into docker image
 1. cd to $PROJECT_ROOT
 2. cd to ./configuration and do git pull to make sure configuration submodule is at newest commit
-3. `mvn clean`
-4. `mvn -Dcustomer-detail-service=localhost -DDB_PASSWORD=Microservice@39909204 -DDB_USERNAME=microservice -DHOST=localhost -Dorder-service=localhost -Dproduction-ticket-service=localhost -Duser-service=localhost package`
+3. `mvn -Dcustomer-detail-service=localhost -DDB_PASSWORD=Microservice@39909204 -DDB_USERNAME=microservice -DHOST=localhost -Dorder-service=localhost -Dproduction-ticket-service=localhost -Duser-service=localhost clean package`
 
    maven package execute tests and we want it to be able to load application context, thus the HOST environment variable is needed
    when running mvn package, there will be a .jar under $PROJECT_ROOT/target/customer-detail-service-<version>.jar. The docker file then uses this location to copy into the image
-5. `docker build -t customer-detail-service:<version> .`
+4. `docker build -t customer-detail-service:<version> .`
 
 # Running this service locally
 There are some preconfigured environment variables that need to be fulfilled and they are listed below
