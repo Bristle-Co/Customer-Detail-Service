@@ -1,4 +1,4 @@
-this service is used to store data of all the users and employees in Bristle Co., Ltd
+this service is used to handle data of all the customers of Bristle Co., Ltd
 # Deployment
 
 ### Build into docker image
@@ -28,4 +28,4 @@ Once a jar is packaged, assuming the name of the .jar file is `customer-detail-s
 
 assuming the image repository is customer-detail-service and tag(<version>) is 0.0.1
 
-      docker run -p 8085:8085 -p 9095:9095 -ti --env customer-detail-service=localhost --env DB_PASSWORD=Microservice@39909204 --env DB_USERNAME=microservice --env HOST=host.docker.internal --env order-service=localhost --env production-ticket-service=localhost --env user-service=localhost customer-detail-service:0.0.1
+      docker run -p 8085:8085 -p 9095:9095 -ti --env customer-detail-service=localhost --env DB_PASSWORD=Microservice@39909204 --env DB_USERNAME=microservice --env HOST=host.docker.internal --env order-service=localhost --env production-ticket-service=localhost --env user-service=localhost andersonhsieh0330/customer-detail-service:0.0.1
